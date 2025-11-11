@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Prisma
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
+backend/prisma/migrations/
+
+# Next.js (para quando criar o frontend)
+frontend/.next/
+frontend/out/
+
+# Docker
+*.tar
+docker-compose.override.yml
+
+# Logs
+logs/
+*.log
+
+# OS
+Thumbs.db

@@ -3,6 +3,8 @@ import {
   CreateDemandaInput,
   UpdateDemandaInput,
 } from "../schemas/demanda.schema";
+import { StatusDemandaType } from "../types/demanda.types";
+import { StatusValidator } from "../utils/status-validator";
 
 export class DemandaService {
   async create(data: CreateDemandaInput) {
@@ -58,31 +60,39 @@ export class DemandaService {
   }
 
   async update(id: number, data: UpdateDemandaInput) {
-    const updateData: any = {};
-
-    if (data.dataInicial) updateData.dataInicial = data.dataInicial;
-    if (data.dataFinal) updateData.dataFinal = data.dataFinal;
-    if (data.status) updateData.status = data.status;
-
-    // If we have items to update
-    if (data.itens) {
-      // Remove all old items and create new ones
-      await prisma.demandaItem.deleteMany({
-        where: { demandaId: id },
+    if (data.status) {
+      const demandaAtual = await prisma.demanda.findUnique({
+        where: { id },
+        select: { status: true },
       });
 
-      updateData.itens = {
-        create: data.itens.map((item) => ({
-          itemId: item.itemId,
-          totalPlanejado: item.totalPlanejado,
-          totalProduzido: item.totalProduzido,
-        })),
-      };
+      if (!demandaAtual) {
+        throw new Error("Demanda not found");
+      }
+
+      StatusValidator.validateTransition(
+        demandaAtual.status as StatusDemandaType,
+        data.status as StatusDemandaType
+      );
     }
 
     return await prisma.demanda.update({
       where: { id },
-      data: updateData,
+      data: {
+        dataInicial: data.dataInicial,
+        dataFinal: data.dataFinal,
+        status: data.status,
+        itens: data.itens
+          ? {
+              deleteMany: {},
+              create: data.itens.map((item) => ({
+                itemId: item.itemId,
+                totalPlanejado: item.totalPlanejado,
+                totalProduzido: item.totalProduzido || 0,
+              })),
+            }
+          : undefined,
+      },
       include: {
         itens: {
           include: {

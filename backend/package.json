@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "prisma:migrate": "dotenv -e .env -- prisma migrate dev",
     "prisma:generate": "dotenv -e .env -- prisma generate",
-    "prisma:studio": "dotenv -e .env -- prisma studio"
+    "prisma:studio": "dotenv -e .env -- prisma studio",
+    "prisma:seed": "dotenv -e .env -- prisma db seed"
   },
   "keywords": [],
   "author": "",

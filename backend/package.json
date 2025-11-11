@@ -7,7 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prisma:migrate": "dotenv -e .env -- prisma migrate dev",
+    "prisma:generate": "dotenv -e .env -- prisma generate",
+    "prisma:studio": "dotenv -e .env -- prisma studio"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +22,8 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.0",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
     "nodemon": "^3.1.11",
     "prisma": "^6.19.0",
     "tsx": "^4.20.6",

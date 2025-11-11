@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  sku         String
+  descricao   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  demandaItems DemandaItem[]
+
+  @@map("items")
+}
+
+model Demanda {
+  id          Int      @id @default(autoincrement())
+  dataInicial DateTime
+  dataFinal   DateTime
+  status      String   @default("PLANEJAMENTO") // PLANEJAMENTO, EM_ANDAMENTO, CONCLUIDO
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  itens       DemandaItem[]
+
+  @@map("demandas")
+}
+
+model DemandaItem {
+  id            Int     @id @default(autoincrement())
+  demandaId     Int
+  itemId        Int
+  totalPlanejado Float  // em toneladas
+  totalProduzido Float  @default(0) // em toneladas
+
+  demanda       Demanda @relation(fields: [demandaId], references: [id], onDelete: Cascade)
+  item          Item    @relation(fields: [itemId], references: [id])
+
+  @@map("demanda_items")
+}

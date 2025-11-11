@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "moduleResolution": "bundler",
+    "noImplicitAny": true,
     "types": ["node"]
   },
   "include": ["src/**/*", "prisma/**/*"],

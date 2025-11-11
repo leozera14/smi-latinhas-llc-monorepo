@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "prisma:migrate": "dotenv -e .env -- prisma migrate dev",
     "prisma:generate": "dotenv -e .env -- prisma generate",
     "prisma:studio": "dotenv -e .env -- prisma studio",

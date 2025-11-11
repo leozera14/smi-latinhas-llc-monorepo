@@ -1,6 +1,5 @@
 import { FastifyReply } from "fastify";
 import { ZodError } from "zod";
-
 export class ErrorHandler {
   static handleZodError(error: ZodError, reply: FastifyReply) {
     return reply.status(400).send({

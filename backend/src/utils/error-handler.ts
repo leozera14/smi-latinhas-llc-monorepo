@@ -1,7 +1,7 @@
 import { FastifyReply } from "fastify";
 import { ZodError } from "zod";
 
-export class DemandaErrorHandler {
+export class ErrorHandler {
   static handleZodError(error: ZodError, reply: FastifyReply) {
     return reply.status(400).send({
       error: "Validation error",

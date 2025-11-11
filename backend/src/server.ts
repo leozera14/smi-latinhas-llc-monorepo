@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { demandaRoutes } from "./routes/demanda.routes";
+import { registerRoutes } from "./routes";
 
 const fastify = Fastify({
   logger: true,
@@ -14,7 +15,7 @@ fastify.get("/health", async (req, res) => {
   return { status: "ok", timestamp: new Date().toISOString() };
 });
 
-fastify.register(demandaRoutes);
+registerRoutes(fastify);
 
 const startServer = async () => {
   try {

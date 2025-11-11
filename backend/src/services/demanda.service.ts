@@ -67,7 +67,7 @@ export class DemandaService {
       });
 
       if (!demandaAtual) {
-        throw new Error("Demanda not found");
+        throw new Error("Demanda não encontrada!");
       }
 
       StatusValidator.validateTransition(

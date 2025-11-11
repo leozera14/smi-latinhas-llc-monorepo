@@ -5,7 +5,7 @@ Monorepo contendo backend e frontend para o sistema de planejamento de produçã
 ## 📁 Estrutura do Projeto
 
 ```
-smi-latinhas-monorepo/
+smi-latinhas-llc-monorepo/
 ├── backend/          # API REST com Fastify + TypeScript + Prisma + SQLite
 ├── frontend/         # (em desenvolvimento)
 └── docker-compose.yml

@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 export class ErrorHandler {
   static handleZodError(error: ZodError, reply: FastifyReply) {
     return reply.status(400).send({
-      error: "Validation error",
+      error: "Erro de validação!",
       details: error.issues.map((issue) => ({
         field: issue.path.join("."),
         message: issue.message,
@@ -12,11 +12,7 @@ export class ErrorHandler {
     });
   }
 
-  static handleError(
-    error: any,
-    reply: FastifyReply,
-    resourceName: string = "Resource"
-  ) {
+  static handleError(error: any, reply: FastifyReply, resourceName: string) {
     // Zod validation error
     if (error instanceof ZodError) {
       return this.handleZodError(error, reply);
@@ -24,12 +20,14 @@ export class ErrorHandler {
 
     // Demanda not found
     if (error.code === "P2025") {
-      return reply.status(404).send({ error: `${resourceName} not found` });
+      return reply
+        .status(404)
+        .send({ error: `${resourceName} não encontrada(o).` });
     }
 
     // Generic error
     return reply.status(500).send({
-      error: "Internal server error",
+      error: "Erro interno do servidor...",
       message: error.message,
     });
   }
@@ -40,7 +38,7 @@ export class ValidationHelper {
     const parsedId = parseInt(id);
 
     if (isNaN(parsedId) || parsedId <= 0) {
-      reply.status(400).send({ error: "Invalid ID format" });
+      reply.status(400).send({ error: "Formato de ID invalido." });
 
       return null;
     }

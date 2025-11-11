@@ -20,7 +20,7 @@ registerRoutes(fastify);
 const startServer = async () => {
   try {
     await fastify.listen({ port: 3333 });
-    console.log("🚀 Server running on http://localhost:3333");
+    console.log("🚀 Servidor rodando em http://localhost:3333");
   } catch (error) {
     fastify.log.error(error);
     process.exit(1);

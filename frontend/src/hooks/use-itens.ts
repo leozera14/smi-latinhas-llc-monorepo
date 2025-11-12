@@ -1,6 +1,6 @@
 import { createCrudHooks } from "./use-crud";
-import { ResourceType } from "../types/crud";
-import type { Item, CreateItemDTO, UpdateItemDTO } from "../types/item";
+import { ResourceType } from "@/types/crud";
+import type { Item, CreateItemDTO, UpdateItemDTO } from "@/types/item";
 
 const itemHooks = createCrudHooks<Item, CreateItemDTO, UpdateItemDTO>({
   resource: ResourceType.ITENS,

@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetcher } from "../lib/fetcher";
+import { fetcher } from "@/lib/fetcher";
 import {
   RESOURCE_ENDPOINTS,
   type CrudHooksConfig,
   type CrudHooks,
-} from "../types/crud";
+} from "@/types/crud";
 
 export function createCrudHooks<TEntity, TCreateDTO, TUpdateDTO>(
   config: CrudHooksConfig<TEntity>

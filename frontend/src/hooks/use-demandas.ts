@@ -1,10 +1,10 @@
 import { createCrudHooks } from "./use-crud";
-import { ResourceType } from "../types/crud";
+import { ResourceType } from "@/types/crud";
 import type {
   Demanda,
   CreateDemandaDTO,
   UpdateDemandaDTO,
-} from "../types/demanda";
+} from "@/types/demanda";
 
 const demandaHooks = createCrudHooks<
   Demanda,

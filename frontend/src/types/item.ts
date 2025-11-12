@@ -1,4 +1,5 @@
 export interface Item {
+  id: number;
   sku: string;
   descricao: string;
   createdAt: string;
@@ -11,5 +12,6 @@ export interface CreateItemDTO {
 }
 
 export interface UpdateItemDTO {
+  sku?: string;
   descricao?: string;
 }

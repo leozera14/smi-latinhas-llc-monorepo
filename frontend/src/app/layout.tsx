@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Header } from "./_components/header";
 import { Providers } from "@/providers";
+import { Header, Sidebar } from "./_components/header";
 
 import "./globals.css";
 
@@ -23,7 +23,12 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-1 bg-gray-50">{children}</main>
+            <div className="flex flex-1">
+              <Sidebar />
+              <main className="flex-1 bg-gray-50 overflow-x-hidden">
+                {children}
+              </main>
+            </div>
           </div>
         </Providers>
       </body>

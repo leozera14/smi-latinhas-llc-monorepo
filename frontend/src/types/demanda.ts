@@ -7,38 +7,43 @@ export enum StatusDemanda {
 }
 
 export interface DemandaItem {
+  id: number;
   demandaId: number;
-  itemSku: string;
+  itemId: number;
   totalPlanejado: number;
-  item?: Item;
+  totalProduzido: number;
+  item: Item;
 }
 
 export interface Demanda {
   id: number;
-  dataInicio: string;
-  dataFim: string;
+  dataInicial: string;
+  dataFinal: string;
   status: StatusDemanda;
   createdAt: string;
   updatedAt: string;
-  items: DemandaItem[];
+  itens: DemandaItem[];
 }
 
 export interface CreateDemandaDTO {
-  dataInicio: string;
-  dataFim: string;
+  dataInicial: string;
+  dataFinal: string;
   status: StatusDemanda;
-  items: {
-    itemSku: string;
+  itens: {
+    itemId: number;
     totalPlanejado: number;
+    totalProduzido?: number;
   }[];
 }
 
 export interface UpdateDemandaDTO {
-  dataInicio?: string;
-  dataFim?: string;
+  dataInicial?: string;
+  dataFinal?: string;
   status?: StatusDemanda;
-  items?: {
-    itemSku: string;
+  itens?: {
+    id?: number;
+    itemId: number;
     totalPlanejado: number;
+    totalProduzido: number;
   }[];
 }

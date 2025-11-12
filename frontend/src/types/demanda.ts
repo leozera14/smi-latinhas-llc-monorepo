@@ -1,10 +1,8 @@
+import { StatusDemanda } from "@/config/constants";
 import { Item } from "./item";
 
-export enum StatusDemanda {
-  PLANEJAMENTO = "PLANEJAMENTO",
-  EM_ANDAMENTO = "EM_ANDAMENTO",
-  CONCLUIDO = "CONCLUIDO",
-}
+export type StatusDemandaType =
+  (typeof StatusDemanda)[keyof typeof StatusDemanda];
 
 export interface DemandaItem {
   id: number;
@@ -19,7 +17,7 @@ export interface Demanda {
   id: number;
   dataInicial: string;
   dataFinal: string;
-  status: StatusDemanda;
+  status: StatusDemandaType;
   createdAt: string;
   updatedAt: string;
   itens: DemandaItem[];
@@ -28,7 +26,7 @@ export interface Demanda {
 export interface CreateDemandaDTO {
   dataInicial: string;
   dataFinal: string;
-  status: StatusDemanda;
+  status: StatusDemandaType;
   itens: {
     itemId: number;
     totalPlanejado: number;
@@ -39,7 +37,7 @@ export interface CreateDemandaDTO {
 export interface UpdateDemandaDTO {
   dataInicial?: string;
   dataFinal?: string;
-  status?: StatusDemanda;
+  status?: StatusDemandaType;
   itens?: {
     id?: number;
     itemId: number;

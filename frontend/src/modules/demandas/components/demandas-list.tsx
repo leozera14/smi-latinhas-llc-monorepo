@@ -1,7 +1,13 @@
 "use client";
 
+import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
-import { Button, CircleLoading, EmptyState } from "@/app/_components/ui";
+import {
+  Button,
+  CircleLoading,
+  EmptyState,
+  ConfirmModal,
+} from "@/app/_components/ui";
 import { DemandasTable } from "./demandas-table";
 import { useUIStore } from "@/stores/ui-store";
 import type { Demanda } from "@/types/demanda";
@@ -10,7 +16,13 @@ import { useDeleteDemanda, useDemandas } from "@/hooks/use-demandas";
 export function DemandasList() {
   const { data: demandas, isLoading, error } = useDemandas();
   const deleteMutation = useDeleteDemanda();
-  const { openDemandaModal } = useUIStore();
+  const {
+    openDemandaModal,
+    isConfirmModalOpen,
+    confirmModalData,
+    openConfirmModal,
+    closeConfirmModal,
+  } = useUIStore();
 
   const handleEdit = (demanda: Demanda) => {
     // TODO: Abrir modal com demanda selecionada
@@ -18,13 +30,26 @@ export function DemandasList() {
     openDemandaModal();
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Tem certeza que deseja excluir esta demanda?")) return;
+  const handleDelete = (id: number) => {
+    openConfirmModal({
+      title: "Excluir Demanda",
+      description:
+        "Tem certeza que deseja excluir esta demanda? Esta ação não pode ser desfeita.",
+      onConfirm: async () => {
+        try {
+          await deleteMutation.mutateAsync(id);
+          toast.success("Demanda excluída com sucesso!");
+          closeConfirmModal();
+        } catch (error: any) {
+          toast.error(error?.message || "Erro ao excluir demanda!");
+        }
+      },
+    });
+  };
 
-    try {
-      await deleteMutation.mutateAsync(id);
-    } catch (error) {
-      alert("Erro ao excluir demanda");
+  const handleConfirmDelete = async () => {
+    if (confirmModalData?.onConfirm) {
+      await confirmModalData.onConfirm();
     }
   };
 
@@ -41,7 +66,7 @@ export function DemandasList() {
     );
   }
 
-  if (!demandas) {
+  if (!demandas || demandas.length === 0) {
     return (
       <EmptyState
         title="Nenhuma demanda cadastrada"
@@ -57,8 +82,8 @@ export function DemandasList() {
   }
 
   return (
-    <>
-      <div className="flex items-center justify-between mb-6">
+    <div className="flex flex-col gap-2.5">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             Demandas de Produção de Latinhas
@@ -67,6 +92,9 @@ export function DemandasList() {
             Gerencie o planejamento de produção
           </p>
         </div>
+      </div>
+
+      <div className="flex items-center justify-end w-full">
         <Button onClick={openDemandaModal} size="lg">
           <Plus className="h-5 w-5 mr-2" />
           Adicionar
@@ -78,6 +106,18 @@ export function DemandasList() {
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-    </>
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onClose={closeConfirmModal}
+        onConfirm={handleConfirmDelete}
+        title={confirmModalData?.title || ""}
+        description={confirmModalData?.description || ""}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        variant="danger"
+        isLoading={deleteMutation.isPending}
+      />
+    </div>
   );
 }

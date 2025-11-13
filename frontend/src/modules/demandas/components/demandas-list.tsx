@@ -25,9 +25,7 @@ export function DemandasList() {
   } = useUIStore();
 
   const handleEdit = (demanda: Demanda) => {
-    // TODO: Abrir modal com demanda selecionada
-    console.log("Editar demanda:", demanda);
-    openDemandaModal();
+    openDemandaModal(demanda);
   };
 
   const handleDelete = (id: number) => {
@@ -47,11 +45,7 @@ export function DemandasList() {
     });
   };
 
-  const handleConfirmDelete = async () => {
-    if (confirmModalData?.onConfirm) {
-      await confirmModalData.onConfirm();
-    }
-  };
+  const handleConfirmDelete = () => confirmModalData?.onConfirm?.();
 
   if (isLoading) {
     return <CircleLoading size="lg" className="py-12" />;
@@ -72,7 +66,7 @@ export function DemandasList() {
         title="Nenhuma demanda cadastrada"
         description="Comece criando sua primeira demanda de produção"
         action={
-          <Button onClick={openDemandaModal}>
+          <Button onClick={() => openDemandaModal()}>
             <Plus className="h-4 w-4 mr-2" />
             Criar Demanda
           </Button>
@@ -95,7 +89,7 @@ export function DemandasList() {
       </div>
 
       <div className="flex items-center justify-end w-full">
-        <Button onClick={openDemandaModal} size="lg">
+        <Button onClick={() => openDemandaModal()} size="lg">
           <Plus className="h-5 w-5 mr-2" />
           Adicionar
         </Button>

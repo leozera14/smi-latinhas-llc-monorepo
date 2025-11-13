@@ -4,9 +4,19 @@ export async function fetcher<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
+  const headers: HeadersInit = {};
+
+  // Only add Content-Type if body exists
+  if (options?.body) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const res = await fetch(`${BASE_API_URL}${endpoint}`, {
-    headers: { "Content-Type": "application/json" },
     ...options,
+    headers: {
+      ...headers,
+      ...options?.headers,
+    },
   });
 
   if (!res.ok) {

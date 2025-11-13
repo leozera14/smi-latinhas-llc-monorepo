@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import { demandaRoutes } from "./routes/demanda.routes";
 import { registerRoutes } from "./routes";
 
 const fastify = Fastify({
@@ -9,6 +8,9 @@ const fastify = Fastify({
 
 fastify.register(cors, {
   origin: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 });
 
 fastify.get("/health", async (req, res) => {

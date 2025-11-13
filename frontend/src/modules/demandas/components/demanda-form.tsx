@@ -16,19 +16,27 @@ import {
   createDemandaSchema,
   type CreateDemandaFormData,
 } from "../schemas/demanda.schema";
+import type { Demanda } from "@/types/demanda";
 
 interface DemandaFormProps {
   onSubmit: (data: CreateDemandaFormData) => void;
   onCancel: () => void;
   isLoading?: boolean;
+  initialData?: Demanda | null;
 }
 
 export function DemandaForm({
   onSubmit,
   onCancel,
   isLoading,
+  initialData,
 }: DemandaFormProps) {
   const { data: itensDisponiveis } = useItens();
+
+  const formatDateForInput = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+  };
 
   const {
     register,
@@ -37,10 +45,21 @@ export function DemandaForm({
     formState: { errors },
   } = useForm<CreateDemandaFormData>({
     resolver: zodResolver(createDemandaSchema),
-    defaultValues: {
-      status: StatusDemanda.PLANEJAMENTO,
-      itens: [],
-    },
+    defaultValues: initialData
+      ? {
+          dataInicial: formatDateForInput(initialData.dataInicial),
+          dataFinal: formatDateForInput(initialData.dataFinal),
+          status: initialData.status,
+          itens: initialData.itens.map((item) => ({
+            itemId: item.itemId,
+            totalPlanejado: item.totalPlanejado,
+            totalProduzido: item.totalProduzido,
+          })),
+        }
+      : {
+          status: StatusDemanda.PLANEJAMENTO,
+          itens: [],
+        },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -55,6 +74,12 @@ export function DemandaForm({
       totalProduzido: 0,
     });
   };
+
+  const submitButtonLabel = isLoading
+    ? "Salvando..."
+    : initialData
+    ? "Atualizar Demanda"
+    : "Salvar Demanda";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -178,7 +203,7 @@ export function DemandaForm({
           Cancelar
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Salvando..." : "Salvar Demanda"}
+          {submitButtonLabel}
         </Button>
       </div>
     </form>

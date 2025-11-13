@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { Demanda } from "@/types/demanda";
 
 interface ConfirmationModalDataProps {
   title: string;
@@ -13,9 +14,10 @@ interface UIState {
   closeSidebar: () => void;
   openSidebar: () => void;
 
-  // Create Demanda Modal
+  // Create/Edit Demanda Modal
   isDemandaModalOpen: boolean;
-  openDemandaModal: () => void;
+  editingDemanda: Demanda | null;
+  openDemandaModal: (demanda?: Demanda) => void;
   closeDemandaModal: () => void;
 
   // Confirmation Modal
@@ -33,10 +35,13 @@ export const useUIStore = create<UIState>((set) => ({
   closeSidebar: () => set({ isSidebarOpen: false }),
   openSidebar: () => set({ isSidebarOpen: true }),
 
-  // Create Demanda Modal
+  // Create/Edit Demanda Modal
   isDemandaModalOpen: false,
-  openDemandaModal: () => set({ isDemandaModalOpen: true }),
-  closeDemandaModal: () => set({ isDemandaModalOpen: false }),
+  editingDemanda: null,
+  openDemandaModal: (demanda) =>
+    set({ isDemandaModalOpen: true, editingDemanda: demanda || null }),
+  closeDemandaModal: () =>
+    set({ isDemandaModalOpen: false, editingDemanda: null }),
 
   // Confirmation Modal
   isConfirmModalOpen: false,

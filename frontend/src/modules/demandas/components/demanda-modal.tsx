@@ -3,23 +3,49 @@
 import toast from "react-hot-toast";
 import { Modal } from "@/app/_components/ui";
 import { useUIStore } from "@/stores/ui-store";
-import { useCreateDemanda } from "@/hooks/use-demandas";
+import { useCreateDemanda, useUpdateDemanda } from "@/hooks/use-demandas";
 import { DemandaForm } from "./demanda-form";
 import type { CreateDemandaFormData } from "../schemas/demanda.schema";
 
 export function DemandaModal() {
-  const { isDemandaModalOpen, closeDemandaModal } = useUIStore();
+  const { isDemandaModalOpen, editingDemanda, closeDemandaModal } =
+    useUIStore();
   const createMutation = useCreateDemanda();
+  const updateMutation = useUpdateDemanda();
+
+  const isEditing = !!editingDemanda;
 
   const handleSubmit = async (data: CreateDemandaFormData) => {
     try {
-      await createMutation.mutateAsync(data);
+      if (isEditing) {
+        await updateMutation.mutateAsync({
+          id: editingDemanda.id,
+          data: {
+            dataInicial: data.dataInicial,
+            dataFinal: data.dataFinal,
+            status: data.status,
+            itens: data.itens.map((item) => ({
+              itemId: item.itemId,
+              totalPlanejado: item.totalPlanejado,
+              totalProduzido: item.totalProduzido,
+            })),
+          },
+        });
 
-      toast.success("Demanda criada com sucesso!");
+        toast.success("Demanda atualizada com sucesso!");
+
+        return;
+      } else {
+        await createMutation.mutateAsync(data);
+
+        toast.success("Demanda criada com sucesso!");
+      }
 
       closeDemandaModal();
     } catch (error: any) {
-      toast.error(error?.message || "Erro ao criar demanda");
+      toast.error(
+        error?.message || `Erro ao ${isEditing ? "atualizar" : "criar"} demanda`
+      );
     }
   };
 
@@ -27,13 +53,16 @@ export function DemandaModal() {
     <Modal
       isOpen={isDemandaModalOpen}
       onClose={closeDemandaModal}
-      title="Nova Demanda de Produção"
+      title={
+        isEditing ? "Editar Demanda de Produção" : "Nova Demanda de Produção"
+      }
       size="xl"
     >
       <DemandaForm
         onSubmit={handleSubmit}
         onCancel={closeDemandaModal}
-        isLoading={createMutation.isPending}
+        isLoading={createMutation.isPending || updateMutation.isPending}
+        initialData={editingDemanda}
       />
     </Modal>
   );

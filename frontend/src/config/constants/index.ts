@@ -14,8 +14,8 @@ export const STATUS_DEMANDA_VALUES = Object.values(StatusDemanda) as [
 ];
 
 // Time - MS constants
-export const FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
-export const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
+export const THIRTY_SECONDS_IN_MS = 30 * 1000;
+export const THREE_MINUTES_IN_MS = 3 * 60 * 1000;
 
 // Toast Config
 export const TOAST_CONFIG = {
@@ -26,7 +26,6 @@ export const TOAST_CONFIG = {
     borderRadius: "8px",
     padding: "16px",
     fontSize: "14px",
-    textAlign: "left",
     boxShadow:
       "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
   },

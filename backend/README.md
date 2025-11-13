@@ -465,3 +465,9 @@ O backend está dockerizado e pode ser executado via `docker-compose` na raiz do
 - **Arquitetura:** Controllers herdam de `BaseController` para reduzir duplicação
 - **Error Handling:** Centralizado em `ErrorHandler` com tratamento específico para Zod e Prisma
 - **Type Safety:** TypeScript strict mode habilitado
+
+---
+
+## 👤 Autor
+
+Desenvolvido por Leonardo Faleiros como parte da prova técnica para SMI Latinhas LLC.

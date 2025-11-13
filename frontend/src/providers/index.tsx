@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  FIVE_MINUTES_IN_MS,
-  TEN_MINUTES_IN_MS,
+  THIRTY_SECONDS_IN_MS,
+  THREE_MINUTES_IN_MS,
   TOAST_CONFIG,
 } from "@/config/constants";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -16,10 +16,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: FIVE_MINUTES_IN_MS,
-            gcTime: TEN_MINUTES_IN_MS,
-            refetchOnWindowFocus: true,
+            staleTime: THIRTY_SECONDS_IN_MS,
+            gcTime: THREE_MINUTES_IN_MS,
             refetchOnReconnect: true,
+            refetchInterval: THIRTY_SECONDS_IN_MS,
+            refetchIntervalInBackground: true,
             retry: 2,
           },
           mutations: {

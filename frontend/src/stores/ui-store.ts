@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { Demanda } from "@/types/demanda";
+import type { Item } from "@/types/item";
 
 interface ConfirmationModalDataProps {
   title: string;
@@ -19,6 +20,12 @@ interface UIState {
   editingDemanda: Demanda | null;
   openDemandaModal: (demanda?: Demanda) => void;
   closeDemandaModal: () => void;
+
+  // Create/Edit Item Modal
+  isItemModalOpen: boolean;
+  editingItem: Item | null;
+  openItemModal: (item?: Item) => void;
+  closeItemModal: () => void;
 
   // Confirmation Modal
   isConfirmModalOpen: boolean;
@@ -42,6 +49,13 @@ export const useUIStore = create<UIState>((set) => ({
     set({ isDemandaModalOpen: true, editingDemanda: demanda || null }),
   closeDemandaModal: () =>
     set({ isDemandaModalOpen: false, editingDemanda: null }),
+
+  // Create/Edit Item Modal
+  isItemModalOpen: false,
+  editingItem: null,
+  openItemModal: (item) =>
+    set({ isItemModalOpen: true, editingItem: item || null }),
+  closeItemModal: () => set({ isItemModalOpen: false, editingItem: null }),
 
   // Confirmation Modal
   isConfirmModalOpen: false,

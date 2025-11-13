@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, AlertCircle } from "lucide-react";
 import {
   Button,
   Input,
@@ -8,7 +8,6 @@ import {
   FormField,
   FormFieldSmall,
 } from "@/app/_components/ui";
-import { useItens } from "@/hooks/use-itens";
 import { StatusDemanda } from "@/config/constants";
 import type { CreateDemandaFormData } from "../schemas/demanda.schema";
 import type { Demanda } from "@/types/demanda";
@@ -27,7 +26,6 @@ export function DemandaForm({
   isLoading,
   initialData,
 }: DemandaFormProps) {
-  const { data: itensDisponiveis } = useItens();
   const {
     form,
     fields,
@@ -35,6 +33,9 @@ export function DemandaForm({
     removeItem,
     handleSubmit,
     submitButtonLabel,
+    itensDisponiveis,
+    isItemDisabled,
+    hasNoItems,
   } = useDemandaForm({ initialData, onSubmit });
 
   const {
@@ -79,12 +80,27 @@ export function DemandaForm({
             type="button"
             size="sm"
             onClick={handleAddItem}
-            disabled={!itensDisponiveis || itensDisponiveis.length === 0}
+            disabled={hasNoItems}
           >
             <Plus className="h-4 w-4 mr-1" />
             Adicionar Item
           </Button>
         </div>
+
+        {hasNoItems && (
+          <div className="mb-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium text-yellow-800">
+                Nenhum item disponível
+              </p>
+              <p className="text-sm text-yellow-700 mt-1">
+                Você precisa cadastrar itens antes de criar uma demanda. Acesse
+                a página de Itens para criar novos produtos.
+              </p>
+            </div>
+          </div>
+        )}
 
         {errors.itens?.message && (
           <p className="mb-3 text-sm text-red-600">{errors.itens.message}</p>
@@ -107,7 +123,11 @@ export function DemandaForm({
                 >
                   <option value={0}>Selecione...</option>
                   {itensDisponiveis?.map((item) => (
-                    <option key={item.id} value={item.id}>
+                    <option
+                      key={item.id}
+                      value={item.id}
+                      disabled={isItemDisabled(item.id, index)}
+                    >
                       {item.sku} - {item.descricao}
                     </option>
                   ))}

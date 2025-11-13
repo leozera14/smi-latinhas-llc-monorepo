@@ -1,6 +1,5 @@
 "use client";
 
-import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
 import {
   Button,
@@ -10,40 +9,15 @@ import {
 } from "@/app/_components/ui";
 import { DemandasTable } from "./demandas-table";
 import { useUIStore } from "@/stores/ui-store";
-import type { Demanda } from "@/types/demanda";
-import { useDeleteDemanda, useDemandas } from "@/hooks/use-demandas";
+import { useDemandas } from "@/hooks/use-demandas";
+import { useDemandaList } from "../hooks";
 
 export function DemandasList() {
   const { data: demandas, isLoading, error } = useDemandas();
-  const deleteMutation = useDeleteDemanda();
-  const {
-    openDemandaModal,
-    isConfirmModalOpen,
-    confirmModalData,
-    openConfirmModal,
-    closeConfirmModal,
-  } = useUIStore();
-
-  const handleEdit = (demanda: Demanda) => {
-    openDemandaModal(demanda);
-  };
-
-  const handleDelete = (id: number) => {
-    openConfirmModal({
-      title: "Excluir Demanda",
-      description:
-        "Tem certeza que deseja excluir esta demanda? Esta ação não pode ser desfeita.",
-      onConfirm: async () => {
-        try {
-          await deleteMutation.mutateAsync(id);
-          toast.success("Demanda excluída com sucesso!");
-          closeConfirmModal();
-        } catch (error: any) {
-          toast.error(error?.message || "Erro ao excluir demanda!");
-        }
-      },
-    });
-  };
+  const { isConfirmModalOpen, confirmModalData, closeConfirmModal } =
+    useUIStore();
+  const { handleEdit, handleDelete, handleOpenCreateModal, isDeleting } =
+    useDemandaList();
 
   const handleConfirmDelete = () => confirmModalData?.onConfirm?.();
 
@@ -66,7 +40,7 @@ export function DemandasList() {
         title="Nenhuma demanda cadastrada"
         description="Comece criando sua primeira demanda de produção"
         action={
-          <Button onClick={() => openDemandaModal()}>
+          <Button onClick={handleOpenCreateModal}>
             <Plus className="h-4 w-4 mr-2" />
             Criar Demanda
           </Button>
@@ -89,7 +63,7 @@ export function DemandasList() {
       </div>
 
       <div className="flex items-center justify-end w-full">
-        <Button onClick={() => openDemandaModal()} size="lg">
+        <Button onClick={handleOpenCreateModal} size="lg">
           <Plus className="h-5 w-5 mr-2" />
           Adicionar
         </Button>
@@ -110,7 +84,7 @@ export function DemandasList() {
         confirmText="Excluir"
         cancelText="Cancelar"
         variant="danger"
-        isLoading={deleteMutation.isPending}
+        isLoading={isDeleting}
       />
     </div>
   );

@@ -1,7 +1,5 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import {
   Button,
@@ -12,11 +10,9 @@ import {
 } from "@/app/_components/ui";
 import { useItens } from "@/hooks/use-itens";
 import { StatusDemanda } from "@/config/constants";
-import {
-  createDemandaSchema,
-  type CreateDemandaFormData,
-} from "../schemas/demanda.schema";
+import type { CreateDemandaFormData } from "../schemas/demanda.schema";
 import type { Demanda } from "@/types/demanda";
+import { useDemandaForm } from "../hooks";
 
 interface DemandaFormProps {
   onSubmit: (data: CreateDemandaFormData) => void;
@@ -32,57 +28,22 @@ export function DemandaForm({
   initialData,
 }: DemandaFormProps) {
   const { data: itensDisponiveis } = useItens();
-
-  const formatDateForInput = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toISOString().split("T")[0];
-  };
+  const {
+    form,
+    fields,
+    handleAddItem,
+    removeItem,
+    handleSubmit,
+    submitButtonLabel,
+  } = useDemandaForm({ initialData, onSubmit });
 
   const {
     register,
-    handleSubmit,
-    control,
     formState: { errors },
-  } = useForm<CreateDemandaFormData>({
-    resolver: zodResolver(createDemandaSchema),
-    defaultValues: initialData
-      ? {
-          dataInicial: formatDateForInput(initialData.dataInicial),
-          dataFinal: formatDateForInput(initialData.dataFinal),
-          status: initialData.status,
-          itens: initialData.itens.map((item) => ({
-            itemId: item.itemId,
-            totalPlanejado: item.totalPlanejado,
-            totalProduzido: item.totalProduzido,
-          })),
-        }
-      : {
-          status: StatusDemanda.PLANEJAMENTO,
-          itens: [],
-        },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "itens",
-  });
-
-  const handleAddItem = () => {
-    append({
-      itemId: 0,
-      totalPlanejado: 0,
-      totalProduzido: 0,
-    });
-  };
-
-  const submitButtonLabel = isLoading
-    ? "Salvando..."
-    : initialData
-    ? "Atualizar Demanda"
-    : "Salvar Demanda";
+  } = form;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           label="Data Inicial"
@@ -180,7 +141,7 @@ export function DemandaForm({
                   type="button"
                   variant="danger"
                   size="sm"
-                  onClick={() => remove(index)}
+                  onClick={() => removeItem(index)}
                   className="w-full"
                 >
                   <Trash2 className="h-4 w-4 mr-1" />
@@ -203,7 +164,7 @@ export function DemandaForm({
           Cancelar
         </Button>
         <Button type="submit" disabled={isLoading}>
-          {submitButtonLabel}
+          {submitButtonLabel(isLoading || false)}
         </Button>
       </div>
     </form>

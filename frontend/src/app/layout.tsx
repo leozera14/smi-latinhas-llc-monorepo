@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import { Providers } from "@/providers";
 import { Header, Sidebar } from "./_components/header";
 
+import { cn } from "@/utils/cn";
+
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,15 +20,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={inter.className}>
+    <html lang="pt-BR" className="h-full">
+      <body className={cn(inter.className, "h-full")}>
         <Providers>
-          <div className="min-h-screen flex flex-col">
+          <div className="h-full flex flex-col">
             <Header />
-            <div className="flex flex-1">
+            <div className="flex flex-1 overflow-hidden">
               <Sidebar />
-              <main className="flex-1 bg-gray-50 overflow-x-hidden">
-                <div className="container mx-auto px-4 py-8 h-full">
+              <main className="flex-1 bg-gray-50 overflow-y-auto">
+                <div className="container mx-auto p-4 h-full flex flex-col">
                   {children}
                 </div>
               </main>

@@ -47,7 +47,7 @@ export function Pagination({
   };
 
   return (
-    <div className="flex h-full items-end justify-center">
+    <div className="sticky bottom-0 mt-auto pt-2">
       <div className="flex items-center justify-center gap-2">
         <Button
           variant="secondary"
@@ -55,7 +55,7 @@ export function Pagination({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1 || isLoading}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5" />
         </Button>
 
         <div className="flex gap-1">
@@ -80,14 +80,14 @@ export function Pagination({
                 onClick={() => onPageChange(pageNumber)}
                 disabled={isLoading}
                 className={`
-                min-w-[40px] h-10 px-3 rounded-md text-sm font-medium transition-colors
-                ${
-                  isActive
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
-                }
-                disabled:opacity-50 disabled:cursor-not-allowed
-              `}
+                  min-w-[40px] h-10 px-3 rounded-md text-sm font-medium transition-colors
+                  ${
+                    isActive
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
+                  }
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                `}
               >
                 {pageNumber}
               </button>
@@ -101,7 +101,7 @@ export function Pagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || isLoading}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
     </div>

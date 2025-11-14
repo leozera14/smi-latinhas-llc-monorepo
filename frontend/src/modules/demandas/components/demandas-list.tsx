@@ -10,9 +10,10 @@ import {
   Pagination,
 } from "@/app/_components/ui";
 import { DemandasTable } from "./demandas-table";
+import { DemandasFilters } from "./demandas-filters";
 import { useUIStore } from "@/stores/ui-store";
 import { useDemandas } from "@/hooks/use-demandas";
-import { useDemandaList } from "../hooks";
+import { useDemandaList, useDemandaFilters } from "../hooks";
 import { DEFAULT_PAGE_SIZE } from "@/config/constants";
 
 export function DemandasList() {
@@ -29,8 +30,20 @@ export function DemandasList() {
   const { handleEdit, handleDelete, handleOpenCreateModal, isDeleting } =
     useDemandaList();
 
-  const demandas = response?.data || [];
+  const allDemandas = response?.data || [];
   const pagination = response?.pagination;
+
+  const {
+    statusFilter,
+    dataInicialFilter,
+    dataFinalFilter,
+    setStatusFilter,
+    setDataInicialFilter,
+    setDataFinalFilter,
+    filteredDemandas,
+    hasActiveFilters,
+    clearFilters,
+  } = useDemandaFilters(allDemandas);
 
   const handleConfirmDelete = () => confirmModalData?.onConfirm?.();
 
@@ -47,7 +60,11 @@ export function DemandasList() {
     );
   }
 
-  if (!demandas || demandas.length === 0) {
+  const showEmptyState = !allDemandas || allDemandas.length === 0;
+  const showNoResults =
+    !showEmptyState && filteredDemandas.length === 0 && hasActiveFilters;
+
+  if (showEmptyState) {
     return (
       <EmptyState
         title="Nenhuma demanda cadastrada"
@@ -75,18 +92,51 @@ export function DemandasList() {
         </div>
       </div>
 
-      <div className="flex items-center justify-end w-full">
-        <Button onClick={handleOpenCreateModal} size="lg">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between w-full gap-4">
+        <div className="w-full lg:w-auto">
+          <DemandasFilters
+            statusFilter={statusFilter}
+            dataInicialFilter={dataInicialFilter}
+            dataFinalFilter={dataFinalFilter}
+            onStatusChange={setStatusFilter}
+            onDataInicialChange={setDataInicialFilter}
+            onDataFinalChange={setDataFinalFilter}
+            onClearFilters={clearFilters}
+            hasActiveFilters={hasActiveFilters}
+          />
+        </div>
+
+        <Button
+          onClick={handleOpenCreateModal}
+          size="lg"
+          className="w-full lg:w-auto lg:flex-shrink-0"
+        >
           <Plus className="h-5 w-5 mr-2" />
           Adicionar
         </Button>
       </div>
 
-      <DemandasTable
-        demandas={demandas}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      {showNoResults ? (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+          <p className="text-yellow-800 font-medium">
+            Nenhuma demanda encontrada com os filtros aplicados
+          </p>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={clearFilters}
+            className="mt-4"
+          >
+            Limpar Filtros
+          </Button>
+        </div>
+      ) : (
+        <DemandasTable
+          demandas={filteredDemandas}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
 
       <Pagination
         currentPage={pagination?.page || 1}

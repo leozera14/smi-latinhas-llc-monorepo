@@ -10,9 +10,10 @@ import {
   Pagination,
 } from "@/app/_components/ui";
 import { ItensTable } from "./itens-table";
+import { ItensFilters } from "./itens-filters";
 import { useUIStore } from "@/stores/ui-store";
 import { useItens } from "@/hooks/use-itens";
-import { useItemList } from "../hooks";
+import { useItemList, useItemFilters } from "../hooks";
 import { DEFAULT_PAGE_SIZE } from "@/config/constants";
 
 export function ItensList() {
@@ -29,8 +30,16 @@ export function ItensList() {
   const { handleEdit, handleDelete, handleOpenCreateModal, isDeleting } =
     useItemList();
 
-  const itens = response?.data || [];
+  const allItens = response?.data || [];
   const pagination = response?.pagination;
+
+  const {
+    searchTerm,
+    setSearchTerm,
+    filteredItens,
+    hasActiveFilters,
+    clearFilters,
+  } = useItemFilters(allItens);
 
   const handleConfirmDelete = () => confirmModalData?.onConfirm?.();
 
@@ -47,7 +56,11 @@ export function ItensList() {
     );
   }
 
-  if (!itens || itens.length === 0) {
+  const showEmptyState = !allItens || allItens.length === 0;
+  const showNoResults =
+    !showEmptyState && filteredItens.length === 0 && hasActiveFilters;
+
+  if (showEmptyState) {
     return (
       <EmptyState
         title="Nenhum item cadastrado"
@@ -75,14 +88,44 @@ export function ItensList() {
         </div>
       </div>
 
-      <div className="flex items-center justify-end w-full">
-        <Button onClick={handleOpenCreateModal} size="lg">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between w-full gap-4">
+        <ItensFilters
+          onSearchChange={setSearchTerm}
+          onClearFilters={clearFilters}
+          hasActiveFilters={hasActiveFilters}
+        />
+
+        <Button
+          onClick={handleOpenCreateModal}
+          size="lg"
+          className="w-full lg:w-auto lg:flex-shrink-0"
+        >
           <Plus className="h-5 w-5 mr-2" />
           Adicionar
         </Button>
       </div>
 
-      <ItensTable itens={itens} onEdit={handleEdit} onDelete={handleDelete} />
+      {showNoResults ? (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+          <p className="text-yellow-800 font-medium">
+            Nenhum item encontrado com o termo de busca
+          </p>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={clearFilters}
+            className="mt-4"
+          >
+            Limpar Busca
+          </Button>
+        </div>
+      ) : (
+        <ItensTable
+          itens={filteredItens}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      )}
 
       <Pagination
         currentPage={pagination?.page || 1}

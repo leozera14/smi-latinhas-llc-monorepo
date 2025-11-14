@@ -45,7 +45,7 @@ export function DemandaForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <FormField
           label="Data Inicial"
           required
@@ -110,7 +110,7 @@ export function DemandaForm({
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 bg-gray-50 rounded-lg"
+              className="grid grid-cols-1 lg:grid-cols-4 gap-3 p-4 bg-gray-50 rounded-lg"
             >
               <FormFieldSmall
                 label="Item"

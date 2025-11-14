@@ -53,7 +53,7 @@ ItemRow.displayName = "ItemRow";
 export function ItensTable({ itens, onEdit, onDelete }: ItensTableProps) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white">
-      <div className="overflow-x-auto overflow-y-auto max-h-[480px] md:max-h-[650px] pb-1">
+      <div className="overflow-x-auto overflow-y-auto max-h-[480px] lg:max-h-[650px] pb-1">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 sticky top-0 z-10">
             <tr>

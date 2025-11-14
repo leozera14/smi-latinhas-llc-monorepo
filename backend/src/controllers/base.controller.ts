@@ -3,9 +3,24 @@ import { ZodSchema } from "zod";
 import { ErrorHandler, ValidationHelper } from "../utils/error-handler";
 import { RequestWithId } from "../types/fastify.types";
 
+interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+}
+
+interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 interface BaseService<T> {
   create(data: any): Promise<T>;
-  findAll(): Promise<T[]>;
+  findAll(params?: PaginationParams): Promise<PaginatedResponse<T>>;
   findById(id: number): Promise<T | null>;
   update(id: number, data: any): Promise<T>;
   delete(id: number): Promise<T>;
@@ -33,9 +48,24 @@ export class BaseController<T> {
 
   async findAll(req: FastifyRequest, res: FastifyReply) {
     try {
-      const resources = await this.service.findAll();
+      const query = req.query as { page?: string; pageSize?: string };
 
-      return res.status(200).send(resources);
+      const page = query.page ? parseInt(query.page) : 1;
+      const pageSize = query.pageSize ? parseInt(query.pageSize) : 20;
+
+      if (page < 1) {
+        return res.status(400).send({ error: "Page must be greater than 0" });
+      }
+
+      if (pageSize < 1 || pageSize > 100) {
+        return res
+          .status(400)
+          .send({ error: "Page size must be between 1 and 100" });
+      }
+
+      const result = await this.service.findAll({ page, pageSize });
+
+      return res.status(200).send(result);
     } catch (error) {
       return ErrorHandler.handleError(error, res, this.resourceName);
     }

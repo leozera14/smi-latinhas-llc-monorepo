@@ -26,7 +26,9 @@ export default function RootLayout({
             <div className="flex flex-1">
               <Sidebar />
               <main className="flex-1 bg-gray-50 overflow-x-hidden">
-                {children}
+                <div className="container mx-auto px-4 py-8 h-full">
+                  {children}
+                </div>
               </main>
             </div>
           </div>

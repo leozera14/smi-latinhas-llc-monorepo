@@ -17,6 +17,9 @@ export const STATUS_DEMANDA_VALUES = Object.values(StatusDemanda) as [
 export const THIRTY_SECONDS_IN_MS = 30 * 1000;
 export const THREE_MINUTES_IN_MS = 3 * 60 * 1000;
 
+// Pagination - Page Size
+export const DEFAULT_PAGE_SIZE = 20;
+
 // Toast Config
 export const TOAST_CONFIG = {
   duration: 4000,

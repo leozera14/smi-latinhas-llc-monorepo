@@ -4,6 +4,7 @@ import {
   RESOURCE_ENDPOINTS,
   type CrudHooksConfig,
   type CrudHooks,
+  type PaginatedResponse,
 } from "@/types/crud";
 
 export function createCrudHooks<TEntity, TCreateDTO, TUpdateDTO>(
@@ -15,15 +16,19 @@ export function createCrudHooks<TEntity, TCreateDTO, TUpdateDTO>(
   // Query Keys
   const keys = {
     all: [resource] as const,
+    list: (page: number, pageSize: number) => [resource, "list", page, pageSize] as const,
     detail: (id: string | number) => [resource, id] as const,
   };
 
   return {
-    // List all entities
-    useList: () => {
+    // List all entities with pagination
+    useList: (page: number = 1, pageSize: number = 20) => {
       return useQuery({
-        queryKey: keys.all,
-        queryFn: () => fetcher<TEntity[]>(endpoint),
+        queryKey: keys.list(page, pageSize),
+        queryFn: () =>
+          fetcher<PaginatedResponse<TEntity>>(
+            `${endpoint}?page=${page}&pageSize=${pageSize}`
+          ),
       });
     },
 

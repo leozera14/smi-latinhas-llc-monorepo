@@ -7,3 +7,4 @@ export { Modal } from "./modal";
 export { ConfirmModal } from "./confirm-modal";
 export { Select } from "./select";
 export { FormField, FormFieldSmall } from "./form-field";
+export { Pagination } from "./pagination";

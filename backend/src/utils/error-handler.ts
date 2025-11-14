@@ -18,11 +18,20 @@ export class ErrorHandler {
       return this.handleZodError(error, reply);
     }
 
-    // Demanda not found
+    // Resource not found
     if (error.code === "P2025") {
       return reply
         .status(404)
         .send({ error: `${resourceName} não encontrada(o).` });
+    }
+
+    // Foreign key constraint violation (item is used in demandas)
+    if (error.code === "P2003") {
+      return reply.status(400).send({
+        error: "Não é possível excluir este item.",
+        message:
+          "Este item está sendo utilizado em uma ou mais demandas. Remova o item das demandas antes de excluí-lo.",
+      });
     }
 
     // Generic error

@@ -1,23 +1,36 @@
 "use client";
 
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import {
   Button,
   CircleLoading,
   EmptyState,
   ConfirmModal,
+  Pagination,
 } from "@/app/_components/ui";
 import { DemandasTable } from "./demandas-table";
 import { useUIStore } from "@/stores/ui-store";
 import { useDemandas } from "@/hooks/use-demandas";
 import { useDemandaList } from "../hooks";
+import { DEFAULT_PAGE_SIZE } from "@/config/constants";
 
 export function DemandasList() {
-  const { data: demandas, isLoading, error } = useDemandas();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {
+    data: response,
+    isLoading,
+    error,
+  } = useDemandas(currentPage, DEFAULT_PAGE_SIZE);
+
   const { isConfirmModalOpen, confirmModalData, closeConfirmModal } =
     useUIStore();
   const { handleEdit, handleDelete, handleOpenCreateModal, isDeleting } =
     useDemandaList();
+
+  const demandas = response?.data || [];
+  const pagination = response?.pagination;
 
   const handleConfirmDelete = () => confirmModalData?.onConfirm?.();
 
@@ -50,7 +63,7 @@ export function DemandasList() {
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-2.5 h-full">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
@@ -73,6 +86,13 @@ export function DemandasList() {
         demandas={demandas}
         onEdit={handleEdit}
         onDelete={handleDelete}
+      />
+
+      <Pagination
+        currentPage={pagination?.page || 1}
+        totalPages={pagination?.totalPages || 1}
+        onPageChange={setCurrentPage}
+        isLoading={isLoading}
       />
 
       <ConfirmModal

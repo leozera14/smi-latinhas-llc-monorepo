@@ -18,7 +18,8 @@ export function useDemandaForm({
   initialData,
   onSubmit,
 }: UseDemandaFormStateParams) {
-  const { data: itensDisponiveis, isSuccess: itensLoaded } = useItens();
+  const { data: itensResponse, isSuccess: itensLoaded } = useItens(1, 100);
+  const itensDisponiveis = itensResponse?.data;
 
   const formatDateForInput = (dateString: string) => {
     const date = new Date(dateString);

@@ -1,6 +1,11 @@
 import { prisma } from "../config/database";
 import { CreateItemInput, UpdateItemInput } from "../schemas/item.schema";
 
+interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+}
+
 export class ItemService {
   async create(data: CreateItemInput) {
     return await prisma.item.create({
@@ -11,12 +16,31 @@ export class ItemService {
     });
   }
 
-  async findAll() {
-    return await prisma.item.findMany({
-      orderBy: {
-        createdAt: "desc",
+  async findAll(params?: PaginationParams) {
+    const page = params?.page || 1;
+    const pageSize = params?.pageSize || 20;
+    const skip = (page - 1) * pageSize;
+
+    const [data, total] = await Promise.all([
+      prisma.item.findMany({
+        skip,
+        take: pageSize,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.item.count(),
+    ]);
+
+    return {
+      data,
+      pagination: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.ceil(total / pageSize),
       },
-    });
+    };
   }
 
   async findById(id: number) {

@@ -1,23 +1,36 @@
 "use client";
 
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import {
   Button,
   CircleLoading,
   EmptyState,
   ConfirmModal,
+  Pagination,
 } from "@/app/_components/ui";
 import { ItensTable } from "./itens-table";
 import { useUIStore } from "@/stores/ui-store";
 import { useItens } from "@/hooks/use-itens";
 import { useItemList } from "../hooks";
+import { DEFAULT_PAGE_SIZE } from "@/config/constants";
 
 export function ItensList() {
-  const { data: itens, isLoading, error } = useItens();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const {
+    data: response,
+    isLoading,
+    error,
+  } = useItens(currentPage, DEFAULT_PAGE_SIZE);
+
   const { isConfirmModalOpen, confirmModalData, closeConfirmModal } =
     useUIStore();
   const { handleEdit, handleDelete, handleOpenCreateModal, isDeleting } =
     useItemList();
+
+  const itens = response?.data || [];
+  const pagination = response?.pagination;
 
   const handleConfirmDelete = () => confirmModalData?.onConfirm?.();
 
@@ -50,7 +63,7 @@ export function ItensList() {
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-2.5 h-full">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
@@ -70,6 +83,13 @@ export function ItensList() {
       </div>
 
       <ItensTable itens={itens} onEdit={handleEdit} onDelete={handleDelete} />
+
+      <Pagination
+        currentPage={pagination?.page || 1}
+        totalPages={pagination?.totalPages || 1}
+        onPageChange={setCurrentPage}
+        isLoading={isLoading}
+      />
 
       <ConfirmModal
         isOpen={isConfirmModalOpen}

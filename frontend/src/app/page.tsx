@@ -5,7 +5,7 @@ import { Button } from "./_components/ui";
 
 export default function Home() {
   return (
-    <div className="container mx-auto px-4 py-12">
+    <>
       <div className="max-w-3xl mx-auto text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           Sistema de Planejamento de Demandas
@@ -50,6 +50,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
